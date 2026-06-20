@@ -1,0 +1,54 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: zt_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: zt_admin
+      POSTGRES_PASSWORD: zt_pass
+      POSTGRES_DB: zt_dashboard
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./infra/postgres/init:/docker-entrypoint-initdb.d
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0
+    container_name: zt_keycloak
+    restart: always
+    command: start-dev
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./infra/keycloak:/opt/keycloak/data/import
+
+  backend:
+    build: ./backend
+    container_name: zt_backend
+    restart: always
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+      - keycloak
+    environment:
+      DATABASE_URL: postgresql://zt_admin:zt_pass@postgres:5432/zt_dashboard
+      KEYCLOAK_URL: http://keycloak:8080
+
+  frontend:
+    build: ./frontend
+    container_name: zt_frontend
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
