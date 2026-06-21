@@ -20,7 +20,7 @@ function App() {
           </nav>
         </aside>
 
-        <main className="flex-1 p-6">
+        <main className="flex-1 p-6 bg-gray-100">
           <Routes>
             <Route path="/" element={<Overview />} />
             <Route path="/risk-monitoring" element={<RiskMonitoring />} />

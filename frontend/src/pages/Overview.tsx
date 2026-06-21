@@ -1,29 +1,21 @@
+import TrustScoreCard from "../components/TrustScoreCard";
+import AlertsTable from "../components/AlertsTable";
+
 export default function Overview() {
   return (
-    <div>
-      <h1 className="text-3xl font-bold mb-6">Overview Dashboard</h1>
+    <div className="p-6 bg-gray-50 min-h-screen space-y-6">
 
-      <div className="grid grid-cols-4 gap-4">
-        <div className="p-4 border rounded-lg">
-          <h2>Total Users</h2>
-          <p className="text-2xl font-bold">250</p>
-        </div>
+      {/* Title */}
+      <h1 className="text-2xl font-bold">Overview Dashboard</h1>
 
-        <div className="p-4 border rounded-lg">
-          <h2>High Risk Users</h2>
-          <p className="text-2xl font-bold">12</p>
-        </div>
-
-        <div className="p-4 border rounded-lg">
-          <h2>Active Alerts</h2>
-          <p className="text-2xl font-bold">18</p>
-        </div>
-
-        <div className="p-4 border rounded-lg">
-          <h2>Average Trust Score</h2>
-          <p className="text-2xl font-bold">82</p>
-        </div>
+      {/* Top Section */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <TrustScoreCard score={85} />
       </div>
+
+      {/* Alerts */}
+      <AlertsTable />
+
     </div>
   );
 }
