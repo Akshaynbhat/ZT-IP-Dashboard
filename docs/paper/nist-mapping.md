@@ -57,3 +57,6 @@ This section helps organizations adopt Zero Trust in a structured and practical 
 
 ## Conclusion
 NIST SP 800-207 provides a framework for implementing Zero Trust by emphasizing continuous verification, least-privilege access, and continuous monitoring. These principles help organizations strengthen security, reduce unauthorized access, and better protect critical resources and sensitive data.
+
+## Project Mapping
+The proposed AI-Powered Zero Trust Security Dashboard applies NIST SP 800-207 principles by continuously verifying users and devices, enforcing least-privilege access, and monitoring activities in real time. Features such as UEBA, anomaly detection, dynamic trust scoring, and adaptive access control align with the Zero Trust model to protect intellectual property and detect insider threats.
