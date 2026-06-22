@@ -1,11 +1,14 @@
 # Dataset
 
-This folder contains the dataset used for the project.
+## Dataset used:
+CERT Insider Threat Dataset (Release 4.2)
 
-## Steps to Use
+## Download Link:
+https://www.kaggle.com/datasets/andrihjonior/cert-insider-threat-dataset-r4-2
 
-1. Download `dataset.zip`
-2. Extract the ZIP file inside this folder
-3. Run the project notebooks
+# Steps:
+1. Download the dataset from Kaggle
+2. Extract the ZIP file
+3. Run the project
 
-Make sure all extracted files remain inside the `datasets` folder.
+Make sure the dataset files are available before running the project.
