@@ -652,7 +652,7 @@
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-      "secret": "**********",
+      "secret": "zt_backend_secret",
       "redirectUris": [
         "/*"
       ],
@@ -2284,5 +2284,64 @@
   },
   "clientPolicies": {
     "policies": []
-  }
+  },
+  "users": [
+    {
+      "id": "e8140db5-d684-4860-84c1-2ba6d934bb61",
+      "username": "test.admin",
+      "enabled": true,
+      "email": "admin@zt-dashboard.local",
+      "firstName": "Test",
+      "lastName": "Admin",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Admin@123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "admin"
+      ],
+      "clientRoles": {}
+    },
+    {
+      "id": "f5fbf104-e3f3-470b-85be-587265bf02ab",
+      "username": "test.analyst",
+      "enabled": true,
+      "email": "analyst@zt-dashboard.local",
+      "firstName": "Test",
+      "lastName": "Analyst",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Analyst@123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "analyst"
+      ],
+      "clientRoles": {}
+    },
+    {
+      "id": "a65d836d-1bf8-466c-be7d-78a05c317db6",
+      "username": "test.employee",
+      "enabled": true,
+      "email": "employee@zt-dashboard.local",
+      "firstName": "Test",
+      "lastName": "Employee",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Employee@123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "employee"
+      ],
+      "clientRoles": {}
+    }
+  ]
 }

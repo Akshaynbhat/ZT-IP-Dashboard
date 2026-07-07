@@ -5,3 +5,7 @@ psycopg2-binary
 python-jose[cryptography]
 python-multipart
 pydantic-settings
+httpx
+apscheduler
+alembic
+python-dotenv

@@ -13,42 +13,51 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
-      - ./infra/postgres/init:/docker-entrypoint-initdb.d
+      - ./postgres/init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U zt_admin -d zt_dashboard"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   keycloak:
     image: quay.io/keycloak/keycloak:24.0
     container_name: zt_keycloak
     restart: always
-    command: start-dev
+    command: start-dev --import-realm
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_HEALTH_ENABLED: "true"
     ports:
       - "8080:8080"
     volumes:
-      - ./infra/keycloak:/opt/keycloak/data/import
+      - ./keycloak:/opt/keycloak/data/import
 
   backend:
-    build: ./backend
+    build: ../backend
     container_name: zt_backend
     restart: always
     ports:
       - "8000:8000"
     depends_on:
-      - postgres
-      - keycloak
+      postgres:
+        condition: service_healthy
+      keycloak:
+        condition: service_started
     environment:
       DATABASE_URL: postgresql://zt_admin:zt_pass@postgres:5432/zt_dashboard
       KEYCLOAK_URL: http://keycloak:8080
 
-  frontend:
-    build: ./frontend
-    container_name: zt_frontend
-    restart: always
-    ports:
-      - "3000:3000"
-    depends_on:
-      - backend
+# Frontend commented out until Member 3 pushes their scaffolded Vite React app
+#   frontend:
+#     build: ../frontend
+#     container_name: zt_frontend
+#     restart: always
+#     ports:
+#       - "3000:3000"
+#     depends_on:
+#       - backend
 
 volumes:
   pgdata:
