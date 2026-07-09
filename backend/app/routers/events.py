@@ -21,6 +21,21 @@ def ingest_event(
     Ingest a new developer activity event log. 
     Accepts logs from any authenticated user to support replay simulator and ingestion agents.
     """
+    # Ensure target user exists in database (auto-provision placeholder if needed)
+    user = db.query(User).filter(User.id == event_data.user_id).first()
+    if not user:
+        user = User(
+            id=event_data.user_id,
+            keycloak_sub=str(event_data.user_id),
+            username=f"user_{str(event_data.user_id)[:8]}",
+            email=f"user_{str(event_data.user_id)[:8]}@zt-enterprise.io",
+            role="employee",
+            department="Unknown"
+        )
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+
     # Look up or create Device record for this specific user
     device = db.query(Device).filter(
         Device.device_fingerprint == event_data.device_fingerprint,

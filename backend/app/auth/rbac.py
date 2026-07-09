@@ -27,6 +27,7 @@ def get_current_user(payload: dict = Depends(get_current_user_payload), db: Sess
     user = db.query(User).filter(User.keycloak_sub == sub).first()
     
     if not user:
+        import uuid
         # Fetch user metadata from token claims
         username = payload.get("preferred_username") or payload.get("username") or f"user_{sub[:8]}"
         email = payload.get("email") or f"{username}@zt-dashboard.local"
@@ -42,8 +43,9 @@ def get_current_user(payload: dict = Depends(get_current_user_payload), db: Sess
         elif "employee" in roles:
             user_role = "employee"
 
-        # Create user record in DB
+        # Create user record in DB aligning the primary key with Keycloak's UUID
         user = User(
+            id=uuid.UUID(sub),
             keycloak_sub=sub,
             username=username,
             email=email,
