@@ -1,5 +1,3 @@
-import React from "react";
-
 interface TrustScoreBadgeProps {
   score: number | null;
   size?: "sm" | "md" | "lg";

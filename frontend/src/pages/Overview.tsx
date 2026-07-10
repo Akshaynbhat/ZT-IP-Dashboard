@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { hasRole, getUserId, getUsername } from "../auth/keycloak";
 import { useUsers } from "../hooks/useUsers";
@@ -9,8 +9,8 @@ import { StatCard } from "../components/StatCard";
 import { LoadingSkeleton } from "../components/LoadingSkeleton";
 import { TrustScoreBadge } from "../components/TrustScoreBadge";
 import { RiskBadge } from "../components/RiskBadge";
-import { User, TrustScore, Alert, UserHistory } from "../types";
-import { AlertTriangle, Users, BarChart3, ShieldAlert, FileText, Globe } from "lucide-react";
+import { User, TrustScore, Alert, UserHistory, AccessLog } from "../types";
+import { AlertTriangle } from "lucide-react";
 
 export function Overview() {
   const navigate = useNavigate();
@@ -138,7 +138,7 @@ export function Overview() {
                 Evaluated against peer behavior baselines
               </span>
             </div>
-            <TrustScoreBadge score={currentScore} size="lg" />
+            <TrustScoreBadge score={currentScore ?? null} size="lg" />
           </div>
 
           <StatCard

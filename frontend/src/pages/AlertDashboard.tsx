@@ -1,15 +1,13 @@
 import React, { useState } from "react";
 import { getUsername } from "../auth/keycloak";
 import { useAlerts } from "../hooks/useAlerts";
-import { useUsers } from "../hooks/useUsers";
-import { useScores } from "../hooks/useScores";
 import { updateAlert, getExplanation, getScores, getUsers } from "../api/client";
 import { LoadingSkeleton } from "../components/LoadingSkeleton";
 import { SeverityBadge } from "../components/SeverityBadge";
 import { TrustScoreBadge } from "../components/TrustScoreBadge";
 import { SHAPChart } from "../components/SHAPChart";
 import { Alert, Explanation } from "../types";
-import { AlertTriangle, ChevronDown, ChevronUp, Clock, User, Filter, Shield } from "lucide-react";
+import { AlertTriangle, ChevronDown, ChevronUp, Clock, User, Filter } from "lucide-react";
 
 export function AlertDashboard() {
   const currentAnalyst = getUsername();

@@ -1,8 +1,6 @@
-import React from "react";
 import { NavLink } from "react-router-dom";
 import {
   getUsername,
-  getRoles,
   hasRole,
   logout,
 } from "../auth/keycloak";
@@ -17,7 +15,6 @@ import {
 
 export function Navbar() {
   const username = getUsername();
-  const roles = getRoles();
 
   // Determine user's highest role for badge display
   let primaryRole = "employee";

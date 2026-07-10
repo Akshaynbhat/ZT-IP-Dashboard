@@ -1,4 +1,3 @@
-import React from "react";
 import {
   BarChart,
   Bar,
@@ -71,7 +70,7 @@ export function SHAPChart({ features }: SHAPChartProps) {
                 borderRadius: "6px",
               }}
               labelStyle={{ color: "#9CA3AF", fontWeight: "bold" }}
-              formatter={(value: any, name: any, props: any) => [
+              formatter={(_value: any, _name: any, props: any) => [
                 `${props.payload.raw_value >= 0 ? "+" : ""}${props.payload.raw_value.toFixed(4)} (${props.payload.direction})`,
                 "Weight",
               ]}
