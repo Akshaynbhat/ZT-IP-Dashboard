@@ -28,7 +28,8 @@ def get_alerts(
     query = db.query(
         Alert, 
         TrustScore.trust_score, 
-        User.username
+        User.username,
+        TrustScore.model_score_id
     ).outerjoin(
         TrustScore, Alert.trust_score_id == TrustScore.id
     ).outerjoin(
@@ -43,7 +44,7 @@ def get_alerts(
     results = query.order_by(Alert.created_at.desc()).all()
 
     alerts_list = []
-    for alert, trust_score, username in results:
+    for alert, trust_score, username, model_score_id in results:
         alerts_list.append(
             AlertResponse(
                 id=alert.id,
@@ -53,7 +54,9 @@ def get_alerts(
                 reviewed_by=alert.reviewed_by,
                 reviewed_at=alert.reviewed_at,
                 trust_score=trust_score,
-                username=username
+                username=username,
+                trust_score_id=alert.trust_score_id,
+                model_score_id=model_score_id
             )
         )
     return alerts_list
@@ -110,5 +113,7 @@ def update_alert(
         reviewed_by=alert.reviewed_by,
         reviewed_at=alert.reviewed_at,
         trust_score=trust_score_val,
-        username=username_val
+        username=username_val,
+        trust_score_id=alert.trust_score_id,
+        model_score_id=alert.trust_score.model_score_id if alert.trust_score else None
     )

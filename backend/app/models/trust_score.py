@@ -19,6 +19,7 @@ class TrustScore(Base):
     anomaly_component: Mapped[float] = mapped_column(Float, nullable=False)
     risk_component: Mapped[float] = mapped_column(Float, nullable=False)
     computed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow)
+    model_score_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("model_scores.id", ondelete="SET NULL"), nullable=True)
 
     # Relationships
     user: Mapped["User"] = relationship("User", back_populates="trust_scores")

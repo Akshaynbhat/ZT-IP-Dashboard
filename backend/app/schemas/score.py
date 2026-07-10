@@ -10,6 +10,7 @@ class TrustScoreResponse(BaseModel):
     anomaly_component: float
     risk_component: float
     computed_at: datetime
+    model_score_id: Optional[uuid.UUID] = None
 
     model_config = {
         "from_attributes": True

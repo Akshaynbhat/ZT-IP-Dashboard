@@ -16,7 +16,13 @@ const client = axios.create({
 
 // Attach bearer tokens to outgoing API requests
 client.interceptors.request.use(
-  (config) => {
+  async (config) => {
+    try {
+      await keycloak.updateToken(30);
+    } catch (error) {
+      console.error("Failed to refresh Keycloak token, redirecting to login:", error);
+      keycloak.login();
+    }
     const token = getToken();
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useUsers } from "../hooks/useUsers";
 import { getUserHistory, getExplanation } from "../api/client";
 import { LoadingSkeleton } from "../components/LoadingSkeleton";

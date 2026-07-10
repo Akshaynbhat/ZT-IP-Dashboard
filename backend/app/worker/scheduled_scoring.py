@@ -162,7 +162,8 @@ async def run_scoring_cycle():
                     trust_score=trust_score,
                     anomaly_component=0.4 * (1.0 - anomaly_score),
                     risk_component=0.4 * (1.0 - risk_probability),
-                    computed_at=datetime.utcnow()
+                    computed_at=datetime.utcnow(),
+                    model_score_id=model_score_record.id
                 )
                 db.add(trust_score_record)
                 db.flush()

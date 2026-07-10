@@ -12,6 +12,8 @@ class AlertResponse(BaseModel):
     reviewed_at: Optional[datetime] = None
     trust_score: Optional[float] = None
     username: Optional[str] = None
+    trust_score_id: Optional[uuid.UUID] = None
+    model_score_id: Optional[uuid.UUID] = None
 
     model_config = {
         "from_attributes": True

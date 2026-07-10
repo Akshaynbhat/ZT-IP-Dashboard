@@ -50,14 +50,14 @@ services:
       KEYCLOAK_URL: http://keycloak:8080
 
 # Frontend commented out until Member 3 pushes their scaffolded Vite React app
-#   frontend:
-#     build: ../frontend
-#     container_name: zt_frontend
-#     restart: always
-#     ports:
-#       - "3000:3000"
-#     depends_on:
-#       - backend
+  frontend:
+    build: ../frontend
+    container_name: zt_frontend
+    restart: always
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
 
 volumes:
   pgdata:

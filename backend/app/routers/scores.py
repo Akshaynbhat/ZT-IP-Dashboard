@@ -46,16 +46,23 @@ def get_score_explanation(
     Retrieve the SHAP explanation associated with a specific model score event.
     Returns the top 3 features contributing to the risk classification.
     """
-    # Look up model score entry
-    model_score = db.query(ModelScore).filter(ModelScore.id == id).first()
+    # 1. Try to find by TrustScore.id first
+    model_score = None
+    trust_score = db.query(TrustScore).filter(TrustScore.id == id).first()
+    if trust_score and trust_score.model_score_id:
+        model_score = db.query(ModelScore).filter(ModelScore.id == trust_score.model_score_id).first()
+
+    # 2. Fall back to existing lookups if not found
     if not model_score:
-        # Check if the id matches access_log_id to be extra helpful
-        model_score = db.query(ModelScore).filter(ModelScore.access_log_id == id).first()
+        model_score = db.query(ModelScore).filter(ModelScore.id == id).first()
         if not model_score:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Model score evaluation record not found"
-            )
+            model_score = db.query(ModelScore).filter(ModelScore.access_log_id == id).first()
+
+    if not model_score:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Model score evaluation record not found"
+        )
 
     # Process and sort SHAP values
     raw_shap = model_score.shap_values or []

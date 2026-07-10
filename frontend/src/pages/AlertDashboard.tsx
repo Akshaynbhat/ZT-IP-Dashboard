@@ -1,15 +1,13 @@
 import React, { useState } from "react";
 import { getUsername } from "../auth/keycloak";
 import { useAlerts } from "../hooks/useAlerts";
-import { useUsers } from "../hooks/useUsers";
-import { useScores } from "../hooks/useScores";
-import { updateAlert, getExplanation, getScores, getUsers } from "../api/client";
+import { updateAlert, getExplanation } from "../api/client";
 import { LoadingSkeleton } from "../components/LoadingSkeleton";
 import { SeverityBadge } from "../components/SeverityBadge";
 import { TrustScoreBadge } from "../components/TrustScoreBadge";
 import { SHAPChart } from "../components/SHAPChart";
 import { Alert, Explanation } from "../types";
-import { AlertTriangle, ChevronDown, ChevronUp, Clock, User, Filter, Shield } from "lucide-react";
+import { AlertTriangle, ChevronDown, ChevronUp, Clock, User, Filter } from "lucide-react";
 
 export function AlertDashboard() {
   const currentAnalyst = getUsername();
@@ -77,26 +75,7 @@ export function AlertDashboard() {
     if (isExpanding && !explanations[alert.id]) {
       setLoadingExplanation(true);
       try {
-        let scoreIdToUse = "";
-        
-        if (isDemoMode) {
-          scoreIdToUse = "mock-score";
-        } else {
-          // Resolve trust_score_id by querying matching username + score from list APIs
-          const allScores = await getScores();
-          const allUsers = await getUsers();
-          const matchedUser = allUsers.find((u) => u.username === alert.username);
-          if (matchedUser) {
-            const matchedScore = allScores.find(
-              (s) =>
-                s.user_id === matchedUser.id &&
-                Math.abs(s.trust_score - (alert.trust_score ?? 0)) < 0.1
-            );
-            if (matchedScore) {
-              scoreIdToUse = matchedScore.id;
-            }
-          }
-        }
+        const scoreIdToUse = isDemoMode ? "mock-score" : (alert.trust_score_id || "");
 
         if (scoreIdToUse) {
           const exp = await getExplanation(scoreIdToUse);
