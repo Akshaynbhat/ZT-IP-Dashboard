@@ -57,7 +57,8 @@ CREATE TABLE trust_scores (
     trust_score FLOAT NOT NULL CHECK (trust_score >= 0.0 AND trust_score <= 100.0),
     anomaly_component FLOAT NOT NULL,
     risk_component FLOAT NOT NULL,
-    computed_at TIMESTAMPTZ DEFAULT now()
+    computed_at TIMESTAMPTZ DEFAULT now(),
+    model_score_id UUID REFERENCES model_scores(id) ON DELETE SET NULL
 );
 
 -- Table 6: Policy Rules

@@ -15,6 +15,7 @@ export interface TrustScore {
   anomaly_component: number;
   risk_component: number;
   computed_at: string;
+  model_score_id?: string | null;
 }
 
 export interface AccessLog {
@@ -57,6 +58,8 @@ export interface Alert {
   reviewed_at: string | null;
   trust_score: number | null;
   username: string | null;
+  trust_score_id?: string | null;
+  model_score_id?: string | null;
 }
 
 export interface PolicyRule {
