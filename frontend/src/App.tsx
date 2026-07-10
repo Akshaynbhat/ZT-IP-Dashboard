@@ -14,7 +14,7 @@ function RoleGuard({ children }: { children: React.ReactNode }) {
   
   if (!isSecurityStaff) {
     // Silently redirect standard employees back to Overview landing page
-    return <Navigate to="/" replace />;
+    return <Navigate to="/" state={{ restricted: true }} replace />;
   }
   return <>{children}</>;
 }
