@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { hasRole, getUserId, getUsername } from "../auth/keycloak";
 import { useUsers } from "../hooks/useUsers";
 import { useScores } from "../hooks/useScores";
@@ -14,9 +14,20 @@ import { AlertTriangle } from "lucide-react";
 
 export function Overview() {
   const navigate = useNavigate();
+  const location = useLocation();
   const isSecurityStaff = hasRole("admin") || hasRole("analyst");
   const employeeId = getUserId();
   const username = getUsername();
+
+  const [showRestrictedBanner, setShowRestrictedBanner] = useState(false);
+
+  useEffect(() => {
+    if (location.state?.restricted) {
+      setShowRestrictedBanner(true);
+      // Clear the history state so refreshing doesn't show it again
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location, navigate]);
 
   // 1. Data hooks for Security Staff
   const { data: users, loading: loadingUsers, error: errorUsers } = useUsers();
@@ -112,6 +123,22 @@ export function Overview() {
 
     return (
       <div className="space-y-6">
+        {showRestrictedBanner && (
+          <div className="bg-yellow-950/40 border border-yellow-800 text-yellow-300 rounded-lg p-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <AlertTriangle className="w-5 h-5 shrink-0 text-brand-yellow animate-pulse" />
+              <span className="text-sm font-medium">
+                You only have access to your own summary view.
+              </span>
+            </div>
+            <button
+              onClick={() => setShowRestrictedBanner(false)}
+              className="text-yellow-400 hover:text-yellow-200 transition-colors font-bold text-xs px-2.5 py-1 bg-yellow-900/30 hover:bg-yellow-900/50 rounded"
+            >
+              Dismiss
+            </button>
+          </div>
+        )}
         {/* Employee Banner */}
         <div className="bg-yellow-950/40 border border-yellow-800 text-yellow-300 rounded-lg p-4 flex items-center gap-3">
           <AlertTriangle className="w-5 h-5 shrink-0 text-brand-yellow" />
@@ -193,6 +220,22 @@ export function Overview() {
   // --- RENDER SECURITY STAFF LAYOUT ---
   return (
     <div className="space-y-8">
+      {showRestrictedBanner && (
+        <div className="bg-yellow-950/40 border border-yellow-800 text-yellow-300 rounded-lg p-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <AlertTriangle className="w-5 h-5 shrink-0 text-brand-yellow animate-pulse" />
+            <span className="text-sm font-medium">
+              You only have access to your own summary view.
+            </span>
+          </div>
+          <button
+            onClick={() => setShowRestrictedBanner(false)}
+            className="text-yellow-400 hover:text-yellow-200 transition-colors font-bold text-xs px-2.5 py-1 bg-yellow-900/30 hover:bg-yellow-900/50 rounded"
+          >
+            Dismiss
+          </button>
+        </div>
+      )}
       {isDemoMode && (
         <div className="bg-yellow-950/40 border border-yellow-800 text-yellow-300 rounded-lg p-4 flex items-center gap-3">
           <AlertTriangle className="w-5 h-5 shrink-0 text-brand-yellow animate-pulse" />

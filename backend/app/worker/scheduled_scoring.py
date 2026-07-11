@@ -12,6 +12,7 @@ from app.models.device import Device
 from app.models.policy_rule import PolicyRule
 from app.models.alert import Alert
 from app.ml import score_event
+from app.ml.feature_adapter import build_feature_vector
 from app.policy.policy_engine import evaluate_policy, get_alert_severity
 from app.config import settings
 
@@ -20,55 +21,7 @@ logger = logging.getLogger(__name__)
 # Initialize background scheduler instance
 scheduler = AsyncIOScheduler()
 
-def extract_user_features(user_id: uuid.UUID, event_time: datetime, db: Session) -> dict:
-    """
-    Extracts rolling 24-hour developer statistics from access logs.
-    """
-    day_ago = event_time - timedelta(days=1)
-    
-    # Query logs in the 24-hour window leading up to this event
-    logs_24h = db.query(AccessLog).filter(
-        AccessLog.user_id == user_id,
-        AccessLog.event_time >= day_ago,
-        AccessLog.event_time <= event_time
-    ).all()
 
-    files_downloaded = sum(1 for l in logs_24h if l.event_type == "file_download")
-    bytes_transferred = sum(l.bytes_transferred for l in logs_24h)
-    login_count = sum(1 for l in logs_24h if l.event_type == "login")
-    unique_resources = len({l.resource for l in logs_24h if l.resource})
-    
-    is_off_hours = 1.0 if (event_time.hour >= 20 or event_time.hour < 6) else 0.0
-    is_weekend = 1.0 if event_time.weekday() >= 5 else 0.0
-
-    # Hours since last login
-    last_login = db.query(AccessLog).filter(
-        AccessLog.user_id == user_id,
-        AccessLog.event_type == "login",
-        AccessLog.event_time < event_time
-    ).order_by(AccessLog.event_time.desc()).first()
-
-    hours_since_last_login = 24.0  # Default value
-    if last_login:
-        delta = event_time - last_login.event_time
-        hours_since_last_login = delta.total_seconds() / 3600.0
-
-    privilege_change_flag = 1.0 if any(l.event_type == "privilege_change" for l in logs_24h) else 0.0
-
-    return {
-        "files_downloaded_count": files_downloaded,
-        "bytes_transferred_24h": bytes_transferred,
-        "login_count_24h": login_count,
-        "unique_resources_accessed": unique_resources,
-        "is_off_hours": is_off_hours,
-        "is_weekend": is_weekend,
-        "hours_since_last_login": hours_since_last_login,
-        "login_time_deviation": 0.0,
-        "is_known_device": 1.0,
-        "bytes_deviation_from_baseline": 0.0,
-        "downloads_deviation_from_baseline": 0.0,
-        "privilege_change_flag": privilege_change_flag
-    }
 
 def compute_identity_confidence(log: AccessLog, db: Session) -> float:
     """
@@ -123,8 +76,8 @@ async def run_scoring_cycle():
 
         for log in unscored_logs:
             try:
-                # 1. Aggregate features
-                features = extract_user_features(log.user_id, log.event_time, db)
+                # 1. Aggregate features using real ML feature adapter
+                features = build_feature_vector(log.user_id, log.event_time, db)
                 
                 # 2. Call ML Engine stub
                 ml_result = score_event(features)

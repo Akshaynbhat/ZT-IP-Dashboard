@@ -654,10 +654,10 @@
       "clientAuthenticatorType": "client-secret",
       "secret": "zt_backend_secret",
       "redirectUris": [
-        "/*"
+        "*"
       ],
       "webOrigins": [
-        "/*"
+        "*"
       ],
       "notBefore": 0,
       "bearerOnly": false,
@@ -745,10 +745,10 @@
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "redirectUris": [
-        "/*"
+        "*"
       ],
       "webOrigins": [
-        "/*"
+        "*"
       ],
       "notBefore": 0,
       "bearerOnly": false,
