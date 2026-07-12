@@ -1,4 +1,4 @@
-# NIST SP 800-207 Mapping
+# NIST SP 800-207 summary
 
 ## Introduction
 Zero Trust Architecture (ZTA) is a cybersecurity model that requires continuous verification of users and devices before granting access to resources.
