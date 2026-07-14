@@ -23,3 +23,7 @@ env/
 .idea/
 .DS_Store
 Thumbs.db
+
+# ML Data & Temp outputs
+ml/data/
+/results-template.md

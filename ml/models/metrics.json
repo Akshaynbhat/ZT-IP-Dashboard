@@ -1,0 +1,20 @@
+{
+    "random_forest_v3_tuned": {
+        "roc_auc": 1.0,
+        "precision": 0.9932432432432432,
+        "recall": 1.0,
+        "f1_score": 0.9966101694915255,
+        "f1_macro": 0.99828321917529,
+        "threshold": 0.001
+    },
+    "isolation_forest_v3": {
+        "roc_auc": 1.0
+    },
+    "trust_score": {
+        "roc_auc": 1.0
+    },
+    "ablation_study": {
+        "roc_auc_delta": 0.0,
+        "f1_score_delta": 0.0016863116235051878
+    }
+}
