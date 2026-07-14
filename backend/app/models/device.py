@@ -19,6 +19,8 @@ class Device(Base):
     os: Mapped[str] = mapped_column(String(50), nullable=True)
     is_known: Mapped[bool] = mapped_column(Boolean, default=False)
     first_seen: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow)
+    tenant_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("organizations.id", ondelete="SET NULL"), nullable=True, default=uuid.UUID("9f9bbf10-e3f3-470b-85be-587265bf02ab"))
+
 
     # Relationships
     user: Mapped["User"] = relationship("User", back_populates="devices")

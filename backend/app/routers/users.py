@@ -19,20 +19,21 @@ router = APIRouter(
 
 @router.get("", response_model=List[UserResponse], dependencies=[Depends(require_roles("admin", "analyst"))])
 def list_users(
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """
     List all registered users alongside their current trust score.
     Accessible only by security administrators and analysts.
     """
-    # Subquery to extract the latest computed_at for each user
+    # Subquery to extract the latest computed_at for each user under the current tenant
     latest_score_subquery = db.query(
         TrustScore.user_id,
         func.max(TrustScore.computed_at).label("latest_at")
-    ).group_by(TrustScore.user_id).subquery()
+    ).filter(TrustScore.tenant_id == current_user.tenant_id).group_by(TrustScore.user_id).subquery()
 
     # Outer join users with their latest trust score
-    results = db.query(User, TrustScore).outerjoin(
+    results = db.query(User, TrustScore).filter(User.tenant_id == current_user.tenant_id).outerjoin(
         latest_score_subquery,
         User.id == latest_score_subquery.c.user_id
     ).outerjoin(
@@ -73,8 +74,8 @@ def get_user_history(
             detail="Forbidden: Employees are restricted from querying other users' security history"
         )
 
-    # Verify user exists
-    user = db.query(User).filter(User.id == id).first()
+    # Verify user exists and belongs to the same tenant
+    user = db.query(User).filter(User.id == id, User.tenant_id == current_user.tenant_id).first()
     if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -83,13 +84,16 @@ def get_user_history(
 
     # Fetch last 20 trust scores (ordered chronologically descending)
     scores = db.query(TrustScore).filter(
-        TrustScore.user_id == id
+        TrustScore.user_id == id,
+        TrustScore.tenant_id == current_user.tenant_id
     ).order_by(TrustScore.computed_at.desc()).limit(20).all()
 
     # Fetch last 20 access logs
     logs = db.query(AccessLog).filter(
-        AccessLog.user_id == id
+        AccessLog.user_id == id,
+        AccessLog.tenant_id == current_user.tenant_id
     ).order_by(AccessLog.event_time.desc()).limit(20).all()
+
 
     # Get current trust score (first in descending list, if any)
     latest_trust = scores[0].trust_score if scores else None

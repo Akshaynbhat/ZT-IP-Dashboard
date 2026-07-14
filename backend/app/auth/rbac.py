@@ -43,6 +43,15 @@ def get_current_user(payload: dict = Depends(get_current_user_payload), db: Sess
         elif "employee" in roles:
             user_role = "employee"
 
+        # Resolve tenant_id for multi-tenant isolation, falling back to default org
+        tenant_id_str = payload.get("tenant_id") or payload.get("org_id")
+        tenant_id = uuid.UUID("9f9bbf10-e3f3-470b-85be-587265bf02ab")
+        if tenant_id_str:
+            try:
+                tenant_id = uuid.UUID(tenant_id_str)
+            except ValueError:
+                pass
+
         # Create user record in DB aligning the primary key with Keycloak's UUID
         user = User(
             id=uuid.UUID(sub),
@@ -50,8 +59,10 @@ def get_current_user(payload: dict = Depends(get_current_user_payload), db: Sess
             username=username,
             email=email,
             role=user_role,
-            department=department
+            department=department,
+            tenant_id=tenant_id
         )
+
         db.add(user)
         try:
             db.commit()
@@ -65,7 +76,25 @@ def get_current_user(payload: dict = Depends(get_current_user_payload), db: Sess
                     status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                     detail="Database failed to auto-provision user account"
                 )
+
+    # Active Zero Trust policy enforcement (restrict access if score is below thresholds)
+    if user.role not in ("admin", "analyst"):
+        from app.models.trust_score import TrustScore
+        from app.policy.policy_engine import evaluate_policy
+        latest_score = db.query(TrustScore).filter(
+            TrustScore.user_id == user.id
+        ).order_by(TrustScore.computed_at.desc()).first()
+        
+        if latest_score:
+            action = evaluate_policy(latest_score.trust_score, db)
+            if action == "restrict":
+                raise HTTPException(
+                    status_code=status.HTTP_403_FORBIDDEN,
+                    detail="Access restricted: Security trust score is non-compliant with active organizational policies."
+                )
+
     return user
+
 
 def require_roles(*allowed_roles: str):
     """

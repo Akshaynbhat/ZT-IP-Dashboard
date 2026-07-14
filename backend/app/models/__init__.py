@@ -5,6 +5,7 @@ from app.models.model_score import ModelScore
 from app.models.trust_score import TrustScore
 from app.models.policy_rule import PolicyRule
 from app.models.alert import Alert
+from app.models.organization import Organization
 
 __all__ = [
     "User",
@@ -13,5 +14,7 @@ __all__ = [
     "ModelScore",
     "TrustScore",
     "PolicyRule",
-    "Alert"
+    "Alert",
+    "Organization"
 ]
+

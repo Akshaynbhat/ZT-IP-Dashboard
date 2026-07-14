@@ -7,6 +7,11 @@ class Settings(BaseSettings):
     KEYCLOAK_CLIENT_ID: str = "backend-api"
     SCORING_INTERVAL_SECONDS: int = 60
     LOG_LEVEL: str = "INFO"
+    REDIS_URL: str = "redis://localhost:6379/0"
+    GITHUB_WEBHOOK_SECRET: str = "github_secret_123"
+    GITLAB_WEBHOOK_SECRET: str = "gitlab_secret_123"
+
+
 
     class Config:
         env_file = ".env"

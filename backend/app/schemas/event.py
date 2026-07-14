@@ -1,16 +1,17 @@
 import uuid
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Literal
 from pydantic import BaseModel, Field
 
 class EventCreate(BaseModel):
     user_id: uuid.UUID
     device_fingerprint: str = Field(..., max_length=255)
-    event_type: str = Field(..., max_length=50)  # login, repo_access, file_download, privilege_change, code_export
+    event_type: Literal["login", "repo_access", "file_download", "privilege_change", "code_export"]
     resource: Optional[str] = Field(None, max_length=255)
     bytes_transferred: int = Field(0, ge=0)
     ip_address: Optional[str] = Field(None, max_length=45)
     location: Optional[str] = Field(None, max_length=100)
+
 
 class EventResponse(BaseModel):
     id: uuid.UUID

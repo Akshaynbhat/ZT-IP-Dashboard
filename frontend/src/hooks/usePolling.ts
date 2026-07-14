@@ -51,5 +51,5 @@ export function usePolling<T>(
     return () => clearInterval(timer);
   }, [intervalMs, executeFetch, ...deps]);
 
-  return { data, loading, error, refresh };
+  return { data, setData, loading, error, refresh };
 }

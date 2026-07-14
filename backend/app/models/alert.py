@@ -21,6 +21,8 @@ class Alert(Base):
     reviewed_by: Mapped[str] = mapped_column(String(100), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow)
     reviewed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
+    tenant_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("organizations.id", ondelete="SET NULL"), nullable=True, default=uuid.UUID("9f9bbf10-e3f3-470b-85be-587265bf02ab"))
+
 
     # Relationships
     trust_score: Mapped["TrustScore"] = relationship("TrustScore", back_populates="alerts")
