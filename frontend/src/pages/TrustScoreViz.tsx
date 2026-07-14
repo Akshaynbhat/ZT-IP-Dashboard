@@ -31,7 +31,7 @@ export function TrustScoreViz() {
   const [loadingExplanation, setLoadingExplanation] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
-  const isDemoMode = errorUsers || !users || errorHistory;
+  const isDemoMode = (errorUsers || errorHistory || (users && users.length === 0)) && !loadingUsers;
   const activeUsers = isDemoMode ? MOCK_USERS : users || [];
 
   // Handle user select dropdown

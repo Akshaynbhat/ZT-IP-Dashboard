@@ -57,10 +57,15 @@ export function Overview() {
     }
   }, [isSecurityStaff, employeeId]);
 
+  // Loading states
+  const showLoader = isSecurityStaff
+    ? loadingUsers || loadingScores || loadingAlerts
+    : loadingEmployee;
+
   // Check if any error triggered Demo/Mock mode
   const isDemoMode =
-    (isSecurityStaff && (errorUsers || errorScores || errorAlerts || !users || !scores)) ||
-    (!isSecurityStaff && (employeeError || !employeeHistory));
+    ((isSecurityStaff && (errorUsers || errorScores || errorAlerts || (users && users.length === 0) || (scores && scores.length === 0))) ||
+    (!isSecurityStaff && (employeeError || !employeeHistory))) && !showLoader;
 
   // Determine active datasets
   const activeUsers = isDemoMode ? MOCK_USERS : users || [];
@@ -91,11 +96,6 @@ export function Overview() {
       riskClass: score.trust_score < 40 ? "High" : score.trust_score < 70 ? "Medium" : "Low",
     };
   });
-
-  // Loading states
-  const showLoader = isSecurityStaff
-    ? loadingUsers || loadingScores || loadingAlerts
-    : loadingEmployee;
 
   if (showLoader && !isDemoMode) {
     return (
@@ -280,59 +280,102 @@ export function Overview() {
         />
       </div>
 
-      {/* Riskiest Users Table */}
-      <div className="bg-gray-800 border border-gray-700 rounded-xl shadow-lg p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-bold text-white">Riskiest Active Profiles</h2>
-          <span className="text-xs font-semibold text-gray-500 uppercase tracking-widest">
-            Lowest Trust Score First
-          </span>
+      {/* Main Grid: Riskiest Profiles + SHAP Summary */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Left: Riskiest Active Profiles */}
+        <div className="lg:col-span-2 bg-gray-800 border border-gray-700 rounded-xl shadow-lg p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-bold text-white">Riskiest Active Profiles</h2>
+            <span className="text-xs font-semibold text-gray-500 uppercase tracking-widest">
+              Lowest Trust Score First
+            </span>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm border-collapse">
+              <thead>
+                <tr className="border-b border-gray-700 text-gray-400 font-medium">
+                  <th className="py-3 px-4">User</th>
+                  <th className="py-3 px-4">Department</th>
+                  <th className="py-3 px-4">Dynamic Rating</th>
+                  <th className="py-3 px-4">Risk Class</th>
+                  <th className="py-3 px-4 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-700 text-gray-300">
+                {riskiestUsersJoined.map((rUser) => (
+                  <tr
+                    key={rUser.userId}
+                    className="hover:bg-gray-750/30 cursor-pointer"
+                    onClick={() => navigate("/risk", { state: { highlightUserId: rUser.userId } })}
+                  >
+                    <td className="py-4 px-4 font-bold text-white">{rUser.username}</td>
+                    <td className="py-4 px-4">{rUser.department}</td>
+                    <td className="py-4 px-4">
+                      <TrustScoreBadge score={rUser.trustScore} size="sm" />
+                    </td>
+                    <td className="py-4 px-4">
+                      <RiskBadge riskClass={rUser.riskClass} />
+                    </td>
+                    <td className="py-4 px-4 text-right" onClick={(e) => e.stopPropagation()}>
+                      <button
+                        onClick={() => navigate("/risk", { state: { highlightUserId: rUser.userId } })}
+                        className="text-xs font-bold text-brand-green border border-brand-green/30 hover:bg-brand-green/10 rounded-md px-3 py-1.5 transition-all duration-150"
+                      >
+                        Audit History
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+                {riskiestUsersJoined.length === 0 && (
+                  <tr>
+                    <td colSpan={5} className="py-6 text-center text-gray-500">
+                      No risk score calculations computed in the database.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm border-collapse">
-            <thead>
-              <tr className="border-b border-gray-700 text-gray-400 font-medium">
-                <th className="py-3 px-4">User</th>
-                <th className="py-3 px-4">Department</th>
-                <th className="py-3 px-4">Dynamic Rating</th>
-                <th className="py-3 px-4">Risk Class</th>
-                <th className="py-3 px-4 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-700 text-gray-300">
-              {riskiestUsersJoined.map((rUser) => (
-                <tr
-                  key={rUser.userId}
-                  className="hover:bg-gray-750/30 cursor-pointer"
-                  onClick={() => navigate("/risk", { state: { highlightUserId: rUser.userId } })}
-                >
-                  <td className="py-4 px-4 font-bold text-white">{rUser.username}</td>
-                  <td className="py-4 px-4">{rUser.department}</td>
-                  <td className="py-4 px-4">
-                    <TrustScoreBadge score={rUser.trustScore} size="sm" />
-                  </td>
-                  <td className="py-4 px-4">
-                    <RiskBadge riskClass={rUser.riskClass} />
-                  </td>
-                  <td className="py-4 px-4 text-right" onClick={(e) => e.stopPropagation()}>
-                    <button
-                      onClick={() => navigate("/risk", { state: { highlightUserId: rUser.userId } })}
-                      className="text-xs font-bold text-brand-green border border-brand-green/30 hover:bg-brand-green/10 rounded-md px-3 py-1.5 transition-all duration-150"
-                    >
-                      Audit History
-                    </button>
-                  </td>
-                </tr>
-              ))}
-              {riskiestUsersJoined.length === 0 && (
-                <tr>
-                  <td colSpan={5} className="py-6 text-center text-gray-500">
-                    No risk score calculations computed in the database.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+
+        {/* Right: Global Model SHAP Summary */}
+        <div className="lg:col-span-1 bg-gray-800 border border-gray-700 rounded-xl shadow-lg p-6">
+          <div className="mb-6">
+            <h2 className="text-lg font-bold text-white">Global Threat Indicators (SHAP)</h2>
+            <p className="text-xs text-gray-400 mt-1">
+              Workforce-wide features driving machine learning risk classifications (Mean Absolute SHAP).
+            </p>
+          </div>
+          <div className="space-y-4">
+            {[
+              { label: "Unique Devices Used", name: "unique_devices", val: 8.52, color: "bg-emerald-500" },
+              { label: "Unique Content Accessed", name: "unique_content", val: 8.48, color: "bg-teal-500" },
+              { label: "Total Files Accessed", name: "files_accessed", val: 7.60, color: "bg-brand-green" },
+              { label: "Off-Hour File Actions", name: "off_hour_file", val: 7.06, color: "bg-cyan-500" },
+              { label: "Unique Files Handled", name: "unique_files", val: 6.23, color: "bg-sky-500" },
+              { label: "Isolation Forest Anomaly Score", name: "anomaly_score", val: 5.34, color: "bg-indigo-500" },
+            ].map((item, idx) => (
+              <div key={item.name} className="space-y-1">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-bold text-gray-300">
+                    {idx + 1}. {item.label}
+                  </span>
+                  <span className="font-mono text-gray-400 font-bold">
+                    {item.val.toFixed(2)}%
+                  </span>
+                </div>
+                <div className="w-full bg-gray-900 rounded-full h-2 border border-gray-700">
+                  <div
+                    className={`${item.color} h-full rounded-full transition-all duration-500`}
+                    style={{ width: `${(item.val / 9) * 100}%` }}
+                  />
+                </div>
+                <span className="text-[10px] text-gray-500 font-mono block">
+                  {item.name}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>

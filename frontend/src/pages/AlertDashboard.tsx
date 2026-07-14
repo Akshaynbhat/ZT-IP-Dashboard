@@ -24,7 +24,7 @@ export function AlertDashboard() {
 
 
 
-  const isDemoMode = errorAlerts || !alerts;
+  const isDemoMode = (errorAlerts || (alerts && alerts.length === 0)) && !loadingAlerts;
   const activeAlerts = isDemoMode ? MOCK_ALERTS : alerts || [];
 
   // Severity filter client-side processing

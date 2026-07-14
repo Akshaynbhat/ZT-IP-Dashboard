@@ -67,7 +67,7 @@ export function RiskMonitoring() {
     }
   };
 
-  const isDemoMode = errorUsers || errorScores || !users || !scores;
+  const isDemoMode = (errorUsers || errorScores || (users && users.length === 0) || (scores && scores.length === 0)) && !loadingUsers && !loadingScores;
 
   const activeUsers = isDemoMode ? MOCK_USERS : users || [];
   const activeScores = isDemoMode ? MOCK_SCORES : scores || [];
