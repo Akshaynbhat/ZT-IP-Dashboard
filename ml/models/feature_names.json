@@ -1,0 +1,21 @@
+[
+    "total_logins",
+    "unique_login_pcs",
+    "avg_login_hour",
+    "off_hour_logins",
+    "total_device_events",
+    "unique_devices",
+    "off_hour_device",
+    "files_accessed",
+    "unique_files",
+    "unique_content",
+    "off_hour_file",
+    "files_per_login",
+    "device_login_ratio",
+    "off_hour_ratio",
+    "dev_total_logins",
+    "dev_files_accessed",
+    "dev_total_device_events",
+    "dev_off_hour_ratio",
+    "anomaly_score"
+]

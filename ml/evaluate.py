@@ -26,6 +26,7 @@ from sklearn.metrics import (
     precision_score,
     recall_score,
 )
+from sklearn.ensemble import RandomForestClassifier, IsolationForest
 
 warnings.filterwarnings("ignore")
 

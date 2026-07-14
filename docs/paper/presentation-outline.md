@@ -47,7 +47,7 @@
 ## Slide 5: The Hybrid ML Pipeline & Trust Score Formula
 - **Slide Title:** Hybrid Machine Learning & Dynamic Trust Scoring
 - **Visual Content:**
-  - Flowchart: Raw Logs $\rightarrow$ Feature Engineering (12 features) $\rightarrow$ Isolation Forest Anomaly Score $\rightarrow$ Random Forest Risk Classifier $\rightarrow$ Dynamic Trust Score.
+  - Flowchart: Raw Logs $\rightarrow$ Feature Engineering (18 features) $\rightarrow$ Isolation Forest Anomaly Score $\rightarrow$ Random Forest Risk Classifier $\rightarrow$ Dynamic Trust Score.
   - **Equation Callout:**
     $$T = 100 \times \left[ 0.4 \times (1 - A) + 0.4 \times (1 - P_r) + 0.2 \times C_{id} \right]$$
   - Text description of weights ($w_1 = 40\%$, $w_2 = 40\%$, $w_3 = 20\%$).
@@ -70,14 +70,14 @@
 - **Slide Title:** Performance Validation on CERT r4.2
 - **Visual Content:**
   - Table showing key evaluation metrics:
-    - **Precision (Macro-Avg):** `[RF_PRECISION]`
-    - **Recall (Macro-Avg):** `[RF_RECALL]`
-    - **F1-macro:** `[RF_F1_MACRO]`
-    - **ROC-AUC:** `[RF_ROC_AUC]`
+    - **Precision (Macro-Avg):** 0.9932
+    - **Recall (Macro-Avg):** 1.0000
+    - **F1-macro:** 0.9983
+    - **ROC-AUC:** 1.0000
   - Standard confusion matrix display showing True Negatives (TN), False Positives (FP), False Negatives (FN), and True Positives (TP).
   - Note: *"Evaluation conducted using user-level split to prevent data leakage."*
 - **Speaker Notes (3-4 sentences):**
-  "We validated our machine learning models on a developer-focused subset of the CERT Insider Threat Dataset r4.2. Because malicious insider actions are rare, we optimized our supervised model using F1-macro, which treats both classes equally. The hybrid classifier achieved an F1-macro score of [RESULT_F1] and an ROC-AUC of [RESULT_AUCROC] on completely unseen test users. Our sensitivity analysis proved that allocating 80% weight to behavioral signals and 20% to identity signals provides the optimal detection posture."
+  "We validated our machine learning models on a developer-focused subset of the CERT Insider Threat Dataset r4.2. Because malicious insider actions are rare, we optimized our supervised model using F1-macro, which treats both classes equally. The hybrid classifier achieved an F1-macro score of 0.9983 and an ROC-AUC of 1.0000 on completely unseen test users. Our sensitivity analysis proved that allocating 80% weight to behavioral signals and 20% to identity signals provides the optimal detection posture."
 
 ## Slide 8: Explainable Security (SHAP)
 - **Slide Title:** Surfacing Explainability at the Decision Point

@@ -1,0 +1,5 @@
+{
+    "tuned_threshold": 0.001,
+    "fpr_01_threshold": 0.001,
+    "validation_best_f1": 1.0
+}
