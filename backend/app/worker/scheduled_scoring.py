@@ -116,7 +116,8 @@ async def run_scoring_cycle():
                     anomaly_component=0.4 * (1.0 - anomaly_score),
                     risk_component=0.4 * (1.0 - risk_probability),
                     computed_at=datetime.utcnow(),
-                    model_score_id=model_score_record.id
+                    model_score_id=model_score_record.id,
+                    tenant_id=log.tenant_id
                 )
                 db.add(trust_score_record)
                 db.flush()
@@ -149,12 +150,46 @@ async def run_scoring_cycle():
                             policy_rule_id=matching_rule.id if matching_rule else None,
                             severity=severity,
                             status="open",
-                            created_at=datetime.utcnow()
+                            created_at=datetime.utcnow(),
+                            tenant_id=log.tenant_id
                         )
                         db.add(alert_record)
                         logger.warning(f"Alert created for user {log.user_id} due to score drop. Severity: {severity}")
 
                 db.commit()
+
+
+                # 9. Dispatch real-time updates over WebSockets
+                try:
+                    from app.routers.websocket import manager
+                    from app.models.user import User
+
+                    await manager.publish_update("score", str(log.user_id), {
+                        "id": str(trust_score_record.id),
+                        "user_id": str(log.user_id),
+                        "trust_score": float(trust_score),
+                        "anomaly_component": float(trust_score_record.anomaly_component),
+                        "risk_component": float(trust_score_record.risk_component),
+                        "computed_at": trust_score_record.computed_at.isoformat()
+                    })
+
+                    if action in ("restrict", "require_mfa") and not existing_alert:
+                        user_obj = db.query(User).filter(User.id == log.user_id).first()
+                        username = user_obj.username if user_obj else f"user_{str(log.user_id)[:8]}"
+                        await manager.publish_update("alert", str(log.user_id), {
+                            "id": str(alert_record.id),
+                            "severity": alert_record.severity,
+                            "status": alert_record.status,
+                            "created_at": alert_record.created_at.isoformat(),
+                            "reviewed_by": None,
+                            "reviewed_at": None,
+                            "trust_score": float(trust_score),
+                            "username": username,
+                            "trust_score_id": str(trust_score_record.id),
+                            "model_score_id": str(model_score_record.id)
+                        })
+                except Exception as ws_err:
+                    logger.error(f"WebSocket real-time broadcast failed: {str(ws_err)}")
 
             except Exception as e:
                 db.rollback()

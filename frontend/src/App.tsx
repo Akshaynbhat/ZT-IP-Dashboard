@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { initKeycloak, hasRole } from "./auth/keycloak";
+import { wsManager } from "./api/websocket";
 import { Layout } from "./components/Layout";
 import { Overview } from "./pages/Overview";
 import { RiskMonitoring } from "./pages/RiskMonitoring";
@@ -29,6 +30,7 @@ export function App() {
       .then((authenticated) => {
         if (authenticated) {
           setAuthError(false);
+          wsManager.connect();
         } else {
           console.error("Keycloak returned authenticated = false status.");
           setAuthError(true);
@@ -41,7 +43,12 @@ export function App() {
       .finally(() => {
         setInitializing(false);
       });
+
+    return () => {
+      wsManager.disconnect();
+    };
   }, []);
+
 
   // Show premium credential verification loader
   if (initializing) {

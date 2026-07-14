@@ -1,3 +1,4 @@
+from typing import Literal
 import uuid
 from pydantic import BaseModel, Field
 
@@ -16,5 +17,6 @@ class PolicyRuleResponse(BaseModel):
 class PolicyRuleUpdate(BaseModel):
     threshold_min: float = Field(..., ge=0.0, le=100.0)
     threshold_max: float = Field(..., ge=0.0, le=101.0)
-    action: str = Field(..., max_length=50)  # allow, require_mfa, restrict
+    action: Literal["allow", "require_mfa", "restrict"]
     active: bool
+

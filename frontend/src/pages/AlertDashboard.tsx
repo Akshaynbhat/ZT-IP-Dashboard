@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { getUsername } from "../auth/keycloak";
 import { useAlerts } from "../hooks/useAlerts";
 import { updateAlert, getExplanation } from "../api/client";
@@ -22,8 +22,7 @@ export function AlertDashboard() {
   const [loadingExplanation, setLoadingExplanation] = useState(false);
   const [explanations, setExplanations] = useState<Record<string, Explanation>>({});
 
-  // Dropdown open states
-  const [activeDropdownId, setActiveDropdownId] = useState<string | null>(null);
+
 
   const isDemoMode = errorAlerts || !alerts;
   const activeAlerts = isDemoMode ? MOCK_ALERTS : alerts || [];
@@ -50,7 +49,6 @@ export function AlertDashboard() {
   const handleStatusChange = async (alertId: string, nextStatus: string) => {
     try {
       await updateAlert(alertId, nextStatus, currentAnalyst);
-      setActiveDropdownId(null);
       refreshAlerts();
     } catch (err) {
       console.error(`Failed to transition status for alert ${alertId}:`, err);
@@ -62,7 +60,6 @@ export function AlertDashboard() {
           MOCK_ALERTS[alertIdx].reviewed_by = currentAnalyst;
           MOCK_ALERTS[alertIdx].reviewed_at = new Date().toISOString();
         }
-        setActiveDropdownId(null);
         refreshAlerts();
       }
     }
@@ -93,10 +90,7 @@ export function AlertDashboard() {
     }
   };
 
-  const toggleDropdown = (e: React.MouseEvent, id: string) => {
-    e.stopPropagation(); // Stop toggling expansion when clicking menu
-    setActiveDropdownId((prev) => (prev === id ? null : id));
-  };
+
 
   if (loadingAlerts && !isDemoMode) {
     return (
@@ -123,12 +117,29 @@ export function AlertDashboard() {
         </div>
       )}
 
-      <div>
-        <h1 className="text-3xl font-extrabold text-white">Alert Board</h1>
-        <p className="text-sm text-gray-400 mt-1">
-          Perform case reviews, audit anomaly factors, and transition status in Kanban pipelines.
-        </p>
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-extrabold text-white">Alert Board</h1>
+          <p className="text-sm text-gray-400 mt-1">
+            Perform case reviews, audit anomaly factors, and transition status in Kanban pipelines.
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => window.open("/api/v1/reports/access-logs/csv", "_blank")}
+            className="text-xs font-bold bg-blue-950/40 border border-blue-800 hover:bg-blue-900/40 text-blue-300 px-3.5 py-2 rounded-lg transition-all"
+          >
+            Export Logs (CSV)
+          </button>
+          <button
+            onClick={() => window.open("/api/v1/reports/trust-scores/csv", "_blank")}
+            className="text-xs font-bold bg-cyan-950/40 border border-cyan-800 hover:bg-cyan-900/40 text-cyan-300 px-3.5 py-2 rounded-lg transition-all"
+          >
+            Export Scores (CSV)
+          </button>
+        </div>
       </div>
+
 
       {/* Filter Bar */}
       <div className="flex flex-wrap gap-2 items-center bg-gray-800/40 border border-gray-700 rounded-xl p-4">
@@ -175,7 +186,6 @@ export function AlertDashboard() {
                 {colAlerts.map((alert) => {
                   const isExpanded = expandedAlertId === alert.id;
                   const explanationData = explanations[alert.id];
-                  const isDropdownOpen = activeDropdownId === alert.id;
 
                   // Define action transitions based on state machine
                   const transitions: string[] = [];
@@ -279,34 +289,28 @@ export function AlertDashboard() {
                         </div>
                       )}
 
-                      {/* Dropdown Action Controls */}
+                      {/* Action transition buttons */}
                       {transitions.length > 0 && (
-                        <div className="mt-4 flex justify-end" onClick={(e) => e.stopPropagation()}>
-                          <div className="relative w-full">
-                            <button
-                              onClick={(e) => toggleDropdown(e, alert.id)}
-                              className="w-full flex items-center justify-between gap-1 text-[11px] font-extrabold uppercase text-gray-300 hover:text-white bg-gray-750 border border-gray-650 rounded px-2.5 py-1.5"
-                            >
-                              Transition Status
-                              <ChevronDown className="w-3.5 h-3.5 text-gray-400" />
-                            </button>
-
-                            {isDropdownOpen && (
-                              <div className="absolute right-0 bottom-full mb-1 w-full bg-gray-800 border border-gray-700 rounded-lg shadow-xl z-25 overflow-hidden">
-                                {transitions.map((status) => (
-                                  <button
-                                    key={status}
-                                    onClick={() => handleStatusChange(alert.id, status)}
-                                    className="w-full text-left px-3 py-2 text-xs font-bold text-gray-300 hover:bg-gray-700 hover:text-white uppercase transition-colors"
-                                  >
-                                    Move to {status}
-                                  </button>
-                                ))}
-                              </div>
-                            )}
-                          </div>
+                        <div className="mt-4 pt-3 border-t border-gray-700/50 flex flex-wrap gap-1.5 justify-end" onClick={(e) => e.stopPropagation()}>
+                          {transitions.map((status) => {
+                            let btnColor = "bg-gray-700 hover:bg-gray-600 text-gray-200";
+                            if (status === "reviewed") btnColor = "bg-emerald-950/50 hover:bg-emerald-900/60 text-emerald-400 border border-emerald-800";
+                            if (status === "escalated") btnColor = "bg-amber-950/50 hover:bg-amber-900/60 text-amber-400 border border-amber-800";
+                            if (status === "dismissed") btnColor = "bg-gray-900/80 hover:bg-gray-850 text-gray-400 border border-gray-700";
+                            
+                            return (
+                              <button
+                                key={status}
+                                onClick={() => handleStatusChange(alert.id, status)}
+                                className={`text-[10px] font-extrabold uppercase px-2.5 py-1 rounded transition-colors ${btnColor}`}
+                              >
+                                {status}
+                              </button>
+                            );
+                          })}
                         </div>
                       )}
+
 
                       {/* Review Status Details (If not open) */}
                       {alert.reviewed_by && (

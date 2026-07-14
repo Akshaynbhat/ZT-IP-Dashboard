@@ -1,0 +1,4 @@
+psutil
+watchdog
+requests
+python-dotenv

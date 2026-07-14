@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Literal
 from pydantic import BaseModel, Field
 
 class AlertResponse(BaseModel):
@@ -20,5 +20,6 @@ class AlertResponse(BaseModel):
     }
 
 class AlertUpdate(BaseModel):
-    status: str = Field(..., max_length=20)  # open, reviewed, escalated, dismissed
+    status: Literal["open", "reviewed", "escalated", "dismissed"]
     reviewed_by: str = Field(..., max_length=100)
+

@@ -1,6 +1,16 @@
 -- Enable UUID extension
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
+-- Table 0: Organizations (Multi-Tenant isolation)
+CREATE TABLE organizations (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name VARCHAR(100) UNIQUE NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Seed default organization
+INSERT INTO organizations (id, name) VALUES ('9f9bbf10-e3f3-470b-85be-587265bf02ab', 'Default Organization');
+
 -- Table 1: Users
 CREATE TABLE users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -9,7 +19,8 @@ CREATE TABLE users (
     email VARCHAR(255) NOT NULL,
     role VARCHAR(50) DEFAULT 'employee',
     department VARCHAR(100),
-    created_at TIMESTAMPTZ DEFAULT now()
+    created_at TIMESTAMPTZ DEFAULT now(),
+    tenant_id UUID REFERENCES organizations(id) ON DELETE SET NULL DEFAULT '9f9bbf10-e3f3-470b-85be-587265bf02ab'
 );
 
 -- Table 2: Devices
@@ -19,7 +30,8 @@ CREATE TABLE devices (
     device_fingerprint VARCHAR(255) NOT NULL,
     os VARCHAR(50),
     is_known BOOLEAN DEFAULT false,
-    first_seen TIMESTAMPTZ DEFAULT now()
+    first_seen TIMESTAMPTZ DEFAULT now(),
+    tenant_id UUID REFERENCES organizations(id) ON DELETE SET NULL DEFAULT '9f9bbf10-e3f3-470b-85be-587265bf02ab'
 );
 
 -- Table 3: Access Logs (Append-Only)
@@ -32,7 +44,8 @@ CREATE TABLE access_logs (
     bytes_transferred BIGINT DEFAULT 0,
     event_time TIMESTAMPTZ DEFAULT now(),
     ip_address VARCHAR(45),
-    location VARCHAR(100)
+    location VARCHAR(100),
+    tenant_id UUID REFERENCES organizations(id) ON DELETE SET NULL DEFAULT '9f9bbf10-e3f3-470b-85be-587265bf02ab'
 );
 
 -- Enforce Append-Only constraints on access_logs (prevent updates and deletes)
@@ -58,7 +71,8 @@ CREATE TABLE trust_scores (
     anomaly_component FLOAT NOT NULL,
     risk_component FLOAT NOT NULL,
     computed_at TIMESTAMPTZ DEFAULT now(),
-    model_score_id UUID REFERENCES model_scores(id) ON DELETE SET NULL
+    model_score_id UUID REFERENCES model_scores(id) ON DELETE SET NULL,
+    tenant_id UUID REFERENCES organizations(id) ON DELETE SET NULL DEFAULT '9f9bbf10-e3f3-470b-85be-587265bf02ab'
 );
 
 -- Table 6: Policy Rules
@@ -80,8 +94,10 @@ CREATE TABLE alerts (
     status VARCHAR(20) DEFAULT 'open' CHECK (status IN ('open', 'reviewed', 'escalated', 'dismissed')),
     reviewed_by VARCHAR(100),
     created_at TIMESTAMPTZ DEFAULT now(),
-    reviewed_at TIMESTAMPTZ
+    reviewed_at TIMESTAMPTZ,
+    tenant_id UUID REFERENCES organizations(id) ON DELETE SET NULL DEFAULT '9f9bbf10-e3f3-470b-85be-587265bf02ab'
 );
+
 
 -- Indexes
 CREATE INDEX idx_access_logs_user_time ON access_logs(user_id, event_time);

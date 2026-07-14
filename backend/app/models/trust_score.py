@@ -20,6 +20,8 @@ class TrustScore(Base):
     risk_component: Mapped[float] = mapped_column(Float, nullable=False)
     computed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.utcnow)
     model_score_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("model_scores.id", ondelete="SET NULL"), nullable=True)
+    tenant_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("organizations.id", ondelete="SET NULL"), nullable=True, default=uuid.UUID("9f9bbf10-e3f3-470b-85be-587265bf02ab"))
+
 
     # Relationships
     user: Mapped["User"] = relationship("User", back_populates="trust_scores")

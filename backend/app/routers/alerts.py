@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from app.dependencies import get_db
+from app.dependencies import get_db, get_current_user
 from app.models.alert import Alert
 from app.models.trust_score import TrustScore
 from app.models.user import User
@@ -19,6 +19,7 @@ router = APIRouter(
 def get_alerts(
     status_filter: Optional[str] = None,
     severity_filter: Optional[str] = None,
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """
@@ -30,6 +31,8 @@ def get_alerts(
         TrustScore.trust_score, 
         User.username,
         TrustScore.model_score_id
+    ).filter(
+        Alert.tenant_id == current_user.tenant_id
     ).outerjoin(
         TrustScore, Alert.trust_score_id == TrustScore.id
     ).outerjoin(
@@ -65,18 +68,20 @@ def get_alerts(
 def update_alert(
     id: uuid.UUID,
     alert_update: AlertUpdate,
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """
     Update the status and reviewer of a specific security alert. 
     Triggers reviewed_at timestamp generation upon alert status changes.
     """
-    alert = db.query(Alert).filter(Alert.id == id).first()
+    alert = db.query(Alert).filter(Alert.id == id, Alert.tenant_id == current_user.tenant_id).first()
     if not alert:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Alert not found"
         )
+
 
     # Validate status transitions
     allowed_statuses = {"open", "reviewed", "escalated", "dismissed"}
