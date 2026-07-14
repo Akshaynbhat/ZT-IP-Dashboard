@@ -1,4 +1,4 @@
-# Zero Trust Insider Pathogen (ZT-IP) Security Dashboard
+# AI-Powered Zero Trust Security Dashboard for Insider Threat Detection Using Machine Learning
 
 An enterprise-grade Zero Trust security telemetry and explainable anomaly detection platform. The system ingests developer activity logs, runs them through dynamic machine learning scoring pipelines, evaluates security policies under role-based access controls, and explains threat contributions using SHAP (SHapley Additive exPlanations).
 
