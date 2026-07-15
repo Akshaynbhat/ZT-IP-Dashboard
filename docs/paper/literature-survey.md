@@ -205,3 +205,30 @@ This paper helped us understand how to design and implement a scalable Zero Trus
 
 ---
 
+
+## Paper 9
+**Title:** A Comprehensive Survey of Explainable Artificial Intelligence Techniques for Malicious Insider Threat Detection  
+**Authors:** Khuloud Saeed Alketbi, Abid Mehmood  
+**Year:** 2025  
+
+**Objective**  
+This paper surveys Explainable Artificial Intelligence (XAI) techniques applied to malicious insider threat detection (ITD). It emphasizes how interpretability can improve detection effectiveness, analyst trust, and operational transparency in cybersecurity.  
+
+**Methodology**  
+The authors review machine learning (ML), deep learning (DL), and hybrid ITD models, categorizing them by XAI techniques (e.g., SHAP, LIME, RuleFit). They analyze datasets commonly used in ITD research (NSL-KDD, CICIDS2017, UNSW-NB15, CERT r6.2, IoT datasets) and propose a generalized XAI-ITD pipeline covering data preparation, model development, explainability integration, evaluation, and deployment.  
+
+**Advantages**  
+- First structured survey specifically focused on XAI for insider threat detection.  
+- Highlights how SHAP and LIME enhance interpretability and analyst insight.  
+- Reviews multimodal datasets (behavioral logs, psychometric indicators, IoT traffic) supporting explainable modeling.  
+- Identifies future directions such as privacy-preserving AI, human-in-the-loop explainability, and benchmarking frameworks.  
+
+**Limitations**  
+- Persistent challenges include high false positives, contextual blindness, and lack of standardized metrics for explainability.  
+- Integration of heterogeneous data streams remains complex.  
+- Ethical and privacy concerns with psychometric and personality-based profiling.  
+- Limited availability of realistic, large-scale insider threat datasets.  
+
+**Our Learning**  
+This survey helped us understand how explainable AI can bridge the gap between detection accuracy and interpretability in insider threat detection. It emphasizes that transparency and trust are as critical as performance, and future ITD systems must balance accuracy, explainability, and operational applicability.  
+
