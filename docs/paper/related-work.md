@@ -56,3 +56,24 @@ This paper reviews Zero Trust Architecture (ZTA) as a modern cybersecurity frame
 
 **Summary:**
 This paper presents a comprehensive framework for implementing Zero Trust Architecture (ZTA) in large-scale enterprise environments. It explains the core principles of **"Never Trust, Always Verify,"** least-privilege access, continuous authentication, micro-segmentation, and context-aware access control. The study discusses key architectural components such as Identity and Access Management (IAM), Policy Engine (PE), Policy Enforcement Point (PEP), endpoint security, and AI-driven continuous monitoring. It also proposes a phased implementation strategy for cloud, hybrid, and legacy systems while addressing challenges related to integration, performance, compliance, and organizational readiness. The paper concludes that Zero Trust enhances enterprise security, minimizes cyber risks, and supports secure digital transformation.
+
+## Paper 7
+**Title:** Developing Adaptive Cybersecurity Architectures Using Zero Trust Models and AI-Powered Threat Detection Algorithms
+
+**Authors:** Chigozie Kingsley Ejeofobiri, Michael A. Adelere, Joye Ahmed Shonubi  
+
+**Summary:** This paper explores the integration of Zero Trust Architecture (ZTA) with AI-powered threat detection to build adaptive cybersecurity systems. It explains the limitations of traditional perimeter-based models and highlights how Zero Trust principles such as continuous authentication, least privilege access, micro-segmentation, and assume-breach mentality can be enhanced with machine learning techniques. The study reviews AI models including supervised, unsupervised, and reinforcement learning for anomaly detection, behavioral analytics, and automated incident response. Case studies demonstrate that AI-integrated ZTA reduces detection-to-response time, lowers false positives, and strengthens defenses against insider threats, lateral movement, and zero-day exploits. The research emphasizes the importance of intelligent automation and context-aware enforcement in modern cybersecurity strategies.  
+
+---
+
+## Paper 8
+**Title:** Implementing a Zero-Trust Security Framework to Mitigate Insider Threats in Cloud-Based Infrastructures  
+
+**Author:** Aditya Rautaray  
+
+**Summary:** This research focuses on applying Zero Trust principles to mitigate insider threats in cloud environments. It outlines a layered Zero Trust framework consisting of identity management, network micro-segmentation, data protection, monitoring, and policy enforcement. Case studies across finance, healthcare, and technology sectors show that Zero Trust reduces insider threat incidents by 67–73% and decreases mean detection time from 197 days to 12 days. The paper highlights practical implementation strategies such as multi-factor authentication, just-in-time privilege elevation, encryption, and behavioral analytics. Challenges include deployment complexity (8–14 months), user friction from frequent authentication, and increased workload for security teams. The study concludes that phased implementation, employee training, and automation tools are critical for successful Zero Trust adoption in cloud infrastructures.  
+
+---
+
+
+
