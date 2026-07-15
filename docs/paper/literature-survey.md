@@ -165,3 +165,43 @@ The author proposes a phased implementation strategy using Identity and Access M
 
 ### Our Learning
 This paper helped us understand how to design and implement a scalable Zero Trust Architecture using identity-based access control, continuous monitoring, and phased deployment strategies for enterprise environments.
+
+# Zero Trust Architecture Research Summaries
+
+## Paper 7
+**Title:** Developing Adaptive Cybersecurity Architectures Using Zero Trust Models and AI-Powered Threat Detection Algorithms  
+**Authors:** Chigozie Kingsley Ejeofobiri, Michael A. Adelere, Joye Ahmed Shonubi  
+**Year:** 2022  
+
+- **Objective:** Investigates how Zero Trust Architecture (ZTA) can be combined with AI-powered threat detection algorithms to create adaptive cybersecurity systems.  
+- **Methodology:** Reviews case studies and experimental results showing integration of machine learning techniques (anomaly detection, behavior analytics, NLP) into Zero Trust frameworks.  
+- **Advantages:**  
+  - Reduced detection-to-response time  
+  - Resilience against insider threats, lateral movement, and zero-day exploits  
+  - Enhanced SIEM, UEBA, and automated incident response with AI  
+- **Limitations:**  
+  - Conceptual design focus, limited enterprise-scale deployment results  
+  - Integration challenges with legacy systems not deeply tested  
+- **Our Learning:** AI operationalizes Zero Trust principles, making cybersecurity proactive and adaptive.  
+
+---
+
+## Paper 8
+**Title:** Implementing a Zero-Trust Security Framework to Mitigate Insider Threats in Cloud-Based Infrastructures  
+**Author:** Aditya Rautaray  
+**Year:** 2025  
+
+- **Objective:** Develops and validates a Zero-Trust framework specifically designed to mitigate insider threats in cloud infrastructures.  
+- **Methodology:** Proposes a layered Zero-Trust model (identity, network, data, monitoring, policy) and evaluates effectiveness through case studies in finance, healthcare, and technology sectors.  
+- **Advantages:**  
+  - Insider threat incidents reduced by 67–73%  
+  - Detection time improved from 197 days to 12 days  
+  - Strong focus on cloud-native controls like IAM, micro-segmentation, encryption, and behavioral analytics  
+- **Limitations:**  
+  - Implementation complexity (8–14 months deployment)  
+  - User friction due to frequent authentication  
+  - Increased workload for security teams (35–40% initially)  
+- **Our Learning:** Practical strategies for Zero Trust in cloud environments, emphasizing phased deployment, employee training, and automation.  
+
+---
+
