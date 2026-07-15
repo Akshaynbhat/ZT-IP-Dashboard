@@ -75,5 +75,11 @@ This paper presents a comprehensive framework for implementing Zero Trust Archit
 
 ---
 
+## Paper 9
+**Title:** A Comprehensive Survey of Explainable Artificial Intelligence Techniques for Malicious Insider Threat Detection  
+**Authors:** Khuloud Saeed Alketbi, Abid Mehmood  
+**Year:** 2025  
 
+**Summary:**  
+This survey reviews the application of Explainable Artificial Intelligence (XAI) techniques in malicious insider threat detection (ITD). It highlights the limitations of traditional detection methods and emphasizes how ML and DL models, when combined with XAI tools such as SHAP and LIME, can improve interpretability, analyst trust, and operational transparency. The paper categorizes ITD approaches into supervised, unsupervised, and hybrid models, and examines datasets like NSL-KDD, CICIDS2017, UNSW-NB15, CERT r6.2, and IoT-specific datasets that support explainable modeling. Key contributions include a generalized XAI-ITD pipeline covering data preparation, model development, explainability integration, evaluation, and deployment. The study identifies challenges such as high false positives, contextual blindness, heterogeneous data
 
